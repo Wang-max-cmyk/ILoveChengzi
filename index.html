@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贷款计算器 - 专业金融工具</title>
+    <link rel="icon" type="png" href="https://pic1.imgdb.cn/item/68e0fec9c5157e1a8856eb4a.png">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://pic1.imgdb.cn/item/68e0fec9c5157e1a8856eb4a.png" alt="Logo" class="logo">
+            <div>
+                <h1>专业贷款计算器</h1>
+                <p style="color: #6b7280; margin-top: 4px;">精准计算 · 智能分析 · 专业可靠</p>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(0)">贷款计算器</button>
+            <button class="tab-btn" onclick="switchTab(1)">金融计算器</button>
+        </div>
+
+         <!-- 贷款计算器  -->
+        <div class="tab-content active" id="tab1">
+            <h2 style="color: #1e40af; margin-bottom: 24px;">贷款还款计算</h2>
+            
+            <div class="form-group">
+                <label>贷款本金（元）</label>
+                <input type="number" id="principal" placeholder="请输入贷款本金" value="10000">
+            </div>
+
+            <div class="form-group">
+                <label>贷款期数（月）</label>
+                <input type="number" id="months" placeholder="请输入贷款期数" value="12">
+            </div>
+
+
+            <div class="form-group">
+                <label>年利率（%）</label>
+                <input type="number" id="rateInput" placeholder="请输入年利率" min="1" max="15" step="0.01" value="3.00"
+                    oninput="syncRateFromInput()">
+                <div class="slider-container">
+                    <input type="range" id="rateSlider" min="1" max="15" step="0.01" value="3.00" oninput="updateRateValue()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>还款方式</label>
+                <select id="repaymentType">
+                    <option value="equal-payment">等额本息</option>
+                    <option value="equal-principal">等额本金</option>
+                </select>
+            </div>
+
+            <button class="btn-primary" onclick="calculateLoan()">计算还款</button>
+
+            <div id="loanResult" style="display: none;"></div>
+        </div>
+
+         <!-- 金融计算器  -->
+        <div class="tab-content" id="tab2">
+            <h2 style="color: #1e40af; margin-bottom: 24px;">金融计算工具</h2>
+            
+             <!-- 添加工具选择器  -->
+            <div class="tool-selector">
+                <button class="tool-btn active" onclick="switchTool(0)">终值计算</button>
+                <button class="tool-btn" onclick="switchTool(1)">有效年利率</button>
+                <button class="tool-btn" onclick="switchTool(2)">年金终值</button>
+                <button class="tool-btn" onclick="switchTool(3)">年金现值</button>
+            </div>
+             </CHANGE> 
+
+             <!-- 终值计算工具  -->
+            <div class="tool-content active" id="tool0">
+                <div class="card">
+                    <h4>终值计算</h4>
+                    <div class="form-group">
+                        <label>现值（元）</label>
+                        <input type="number" id="fv_pv" value="10000">
+                    </div>
+                    <div class="form-group">
+                        <label>年利率（%）</label>
+                        <input type="number" id="fv_rate" value="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>期数（年）</label>
+                        <input type="number" id="fv_years" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>计算方式</label>
+                        <select id="fv_type">
+                            <option value="simple">单利</option>
+                            <option value="compound">复利</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="calculateFV()">计算终值</button>
+                    <div class="result-box" id="fv_result" style="display: none;">
+                        <div class="label">终值</div>
+                        <div class="value" id="fv_value">0</div>
+                    </div>
+                </div>
+            </div>
+             </CHANGE> 
+
+             <!-- 有效年利率工具  -->
+            <div class="tool-content" id="tool1">
+                <div class="card">
+                    <h4>有效年利率计算</h4>
+                    <div class="form-group">
+                        <label>名义年利率（%）</label>
+                        <input type="number" id="ear_rate" value="12" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>每年复利次数</label>
+                        <input type="number" id="ear_freq" value="12">
+                    </div>
+                    <button class="btn-primary" onclick="calculateEAR()">计算有效年利率</button>
+                    <div class="result-box" id="ear_result" style="display: none;">
+                        <div class="label">有效年利率</div>
+                        <div class="value" id="ear_value">0</div>
+                    </div>
+                </div>
+            </div>
+             </CHANGE> 
+
+             <!-- 年金终值工具  -->
+            <div class="tool-content" id="tool2">
+                <div class="card">
+                    <h4>年金终值计算</h4>
+                    <div class="form-group">
+                        <label>每期支付金额（元）</label>
+                        <input type="number" id="fva_pmt" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>期利率（%）</label>
+                        <input type="number" id="fva_rate" value="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>期数</label>
+                        <input type="number" id="fva_periods" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>年金类型</label>
+                        <select id="fva_type">
+                            <option value="ordinary">普通年金（期末）</option>
+                            <option value="due">即期年金（期初）</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="calculateFVA()">计算年金终值</button>
+                    <div class="result-box" id="fva_result" style="display: none;">
+                        <div class="label">年金终值</div>
+                        <div class="value" id="fva_value">0</div>
+                    </div>
+                </div>
+            </div>
+             </CHANGE> 
+
+             <!-- 年金现值工具  -->
+            <div class="tool-content" id="tool3">
+                <div class="card">
+                    <h4>年金现值计算</h4>
+                    <div class="form-group">
+                        <label>每期支付金额（元）</label>
+                        <input type="number" id="pva_pmt" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>期利率（%）</label>
+                        <input type="number" id="pva_rate" value="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>期数</label>
+                        <input type="number" id="pva_periods" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>年金类型</label>
+                        <select id="pva_type">
+                            <option value="ordinary">普通年金（期末）</option>
+                            <option value="due">即期年金（期初）</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="calculatePVA()">计算年金现值</button>
+                    <div class="result-box" id="pva_result" style="display: none;">
+                        <div class="label">年金现值</div>
+                        <div class="value" id="pva_value">0</div>
+                    </div>
+                </div>
+            </div>
+             </CHANGE> 
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
